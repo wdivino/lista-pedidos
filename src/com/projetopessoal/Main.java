@@ -23,22 +23,10 @@ public class Main {
                 long orderId = resultSet.getLong("order_id");
                 long productId = resultSet.getLong("product_id");
                 if (!orderMap.containsKey(orderId)) {
-                    Order order = new Order();
-                    order.setId(orderId);
-                    order.setLatitude(resultSet.getDouble("latitude"));
-                    order.setLongitude(resultSet.getDouble("longitude"));
-                    order.setMoment(resultSet.getTimestamp("moment").toInstant());
-                    order.setStatus(OrderStatus.values()[resultSet.getInt("status")]);
-                    orderMap.put(orderId, order);
+                    orderMap.put(orderId, criaOrder(resultSet));
                 }
                 if (!productMap.containsKey(productId)) {
-                    Product product = new Product();
-                    product.setId(productId);
-                    product.setName(resultSet.getString("name"));
-                    product.setDescription(resultSet.getString("description"));
-                    product.setPrice(resultSet.getDouble("price"));
-                    product.setImageUri(resultSet.getString("image_uri"));
-                    productMap.put(productId, product);
+                    productMap.put(productId, criaProduct(resultSet));
                 }
                 Order order = orderMap.get(orderId);
                 order.getProductList().add(productMap.get(productId));
@@ -55,6 +43,26 @@ public class Main {
             }
         }
         DB.closeConnection();
+    }
+
+    private static Order criaOrder(ResultSet resultSet) throws SQLException {
+        Order order = new Order();
+        order.setId(resultSet.getLong("order_id"));
+        order.setLatitude(resultSet.getDouble("latitude"));
+        order.setLongitude(resultSet.getDouble("longitude"));
+        order.setMoment(resultSet.getTimestamp("moment").toInstant());
+        order.setStatus(OrderStatus.values()[resultSet.getInt("status")]);
+        return order;
+    }
+
+    private static Product criaProduct(ResultSet resultSet) throws SQLException {
+        Product product = new Product();
+        product.setId(resultSet.getLong("product_id"));
+        product.setName(resultSet.getString("name"));
+        product.setDescription(resultSet.getString("description"));
+        product.setPrice(resultSet.getDouble("price"));
+        product.setImageUri(resultSet.getString("image_uri"));
+        return product;
     }
 
     static String query() {
