@@ -40,14 +40,15 @@ public class Main {
                     product.setImageUri(resultSet.getString("image_uri"));
                     productMap.put(productId, product);
                 }
-                orderMap.get(orderId).getProductList().add(productMap.get(productId));
+                Order order = orderMap.get(orderId);
+                order.getProductList().add(productMap.get(productId));
             }
             if (!orderMap.isEmpty()) {
                 for (Long orderId : orderMap.keySet()) {
                     Order order = orderMap.get(orderId);
-                    System.out.println(order);
+                    imprimeNoConsole(order);
                     for (Product product : order.getProductList()) {
-                        System.out.println(product);
+                        imprimeNoConsole(product);
                     }
                     quebrarLinha();
                 }
@@ -64,5 +65,9 @@ public class Main {
 
     static void quebrarLinha() {
         System.out.println();
+    }
+
+    static void imprimeNoConsole(Object object) {
+        System.out.println(object);
     }
 }
